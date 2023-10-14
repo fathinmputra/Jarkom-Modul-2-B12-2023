@@ -73,6 +73,11 @@ host -t CNAME www.arjuna.b12.com
 ping www.arjuna.b12.com -c 5
 ```
 ### Screenshot hasil:
+<img width="600" alt="no2_1" src="https://github.com/fathinmputra/Jarkom-Modul-2-B12-2023/assets/133391111/3a2d8a20-afaf-4aa1-91e9-f44675dba685">
+
+<img width="600" alt="no2_2" src="https://github.com/fathinmputra/Jarkom-Modul-2-B12-2023/assets/133391111/a033f0d6-6951-4ee3-8511-58011df6c3f7">
+
+<img width="600" alt="no2_3" src="https://github.com/fathinmputra/Jarkom-Modul-2-B12-2023/assets/133391111/d100bea0-c504-4a7b-86d0-e9278dcca142">
 
 ## NO. 3
 > Dengan cara yang sama seperti soal nomor 2, buatlah website utama dengan akses ke abimanyu.yyy.com dan alias www.abimanyu.yyy.com.
@@ -127,3 +132,6 @@ host -t CNAME www.abimanyu.b12.com
 ping www.abimanyu.b12.com -c 5
 ```
 ### Screenshot hasil:
+<img width="600" alt="no3_1" src="https://github.com/fathinmputra/Jarkom-Modul-2-B12-2023/assets/133391111/e0cff728-9b5b-4014-816c-8497046068a7">
+<img width="600" alt="no3_2" src="https://github.com/fathinmputra/Jarkom-Modul-2-B12-2023/assets/133391111/c9444907-ebaf-4b94-a663-3543dfe91a12">
+<img width="600" alt="no3_3" src="https://github.com/fathinmputra/Jarkom-Modul-2-B12-2023/assets/133391111/dc25e667-cdfc-4424-92c3-ff3442dd7fb1">
