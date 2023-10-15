@@ -11,7 +11,102 @@
 > Yudhistira akan digunakan sebagai DNS Master, Werkudara sebagai DNS Slave, Arjuna merupakan Load Balancer yang terdiri dari beberapa Web Server yaitu Prabakusuma, Abimanyu, dan Wisanggeni. Buatlah topologi dengan pembagian sebagai berikut. Folder topologi dapat diakses pada drive berikut 
 ### Penjelasan :
 
-### Screenshot hasil:
+Topologi yang kami dapat adalah `Topologi no 02`. Berikut Topologi yang sudah dibuat :
+![Screenshot 2023-10-15 125120](https://github.com/fathinmputra/Jarkom-Modul-2-B12-2023/assets/133391111/050a68b4-e101-4d09-89c3-eae8ee2a738d)
+
+### Konfigurasi
+**- Pandudewanata (Router)**
+```
+auto eth0
+iface eth0 inet dhcp
+
+auto eth1
+iface eth1 inet static
+	address 192.184.1.1
+	netmask 255.255.255.0
+
+auto eth2
+iface eth2 inet static
+	address 192.184.2.1
+	netmask 255.255.255.0
+
+auto eth3
+iface eth3 inet static
+	address 192.184.3.1
+	netmask 255.255.255.0
+```
+
+**- Sadewa (Client)**
+```
+auto eth0
+iface eth0 inet static
+	address 192.184.1.2
+	netmask 255.255.255.0
+	gateway 192.184.1.1
+```
+
+**- Nakula (Client)**
+```
+auto eth0
+iface eth0 inet static
+	address 192.184.1.3
+	netmask 255.255.255.0
+	gateway 192.184.1.1
+```
+
+**- Yudhistira (DNS Master)**
+```
+auto eth0
+iface eth0 inet static
+	address 192.184.2.2
+	netmask 255.255.255.0
+	gateway 192.184.2.1
+```
+
+**- Werkudara (DNS Slave)**
+```
+auto eth0
+iface eth0 inet static
+	address 192.184.3.2
+	netmask 255.255.255.0
+	gateway 192.184.3.1
+```
+
+**- Arjuna (Load Balancer)**
+```
+auto eth0
+iface eth0 inet static
+	address 192.184.3.3
+	netmask 255.255.255.0
+	gateway 192.184.3.1
+```
+
+**- Abimanyu (WebServer)**
+```
+auto eth0
+iface eth0 inet static
+	address 192.184.3.4
+	netmask 255.255.255.0
+	gateway 192.184.3.1
+```
+
+**- Prabakusuma (WebServer)**
+```
+auto eth0
+iface eth0 inet static
+	address 192.184.3.5
+	netmask 255.255.255.0
+	gateway 192.184.3.1
+```
+
+**- Wisanggeni (WebServer)**
+```
+auto eth0
+iface eth0 inet static
+	address 192.184.3.6
+	netmask 255.255.255.0
+	gateway 192.184.3.1
+```
 
 ## NO. 2
 
@@ -82,6 +177,8 @@ ping www.arjuna.b12.com -c 5
 ## NO. 3
 > Dengan cara yang sama seperti soal nomor 2, buatlah website utama dengan akses ke abimanyu.yyy.com dan alias www.abimanyu.yyy.com.
 
+### Penjelasan :
+
 Melakukan `bash no3.sh` pada DNS Master Yudhistira untuk membuat website utama abimanyu.b12.com dan www.abimanyu.b12.com
 
 **Yudhistira**
@@ -136,6 +233,712 @@ ping www.abimanyu.b12.com -c 5
 <img width="600" alt="no3_2" src="https://github.com/fathinmputra/Jarkom-Modul-2-B12-2023/assets/133391111/c9444907-ebaf-4b94-a663-3543dfe91a12">
 <img width="600" alt="no3_3" src="https://github.com/fathinmputra/Jarkom-Modul-2-B12-2023/assets/133391111/dc25e667-cdfc-4424-92c3-ff3442dd7fb1">
 
+## NO. 4
+> Kemudian, karena terdapat beberapa web yang harus di-deploy, buatlah subdomain parikesit.abimanyu.yyy.com yang diatur DNS-nya di Yudhistira dan mengarah ke Abimanyu.
+
+### Penjelasan :
+Melakukan `bash no4.sh` pada DNS Master Yudhistira untuk membuat subdomain parikesit.abimanyu.b12.com
+
+**Yudhistira**
+```
+echo '
+;
+; BIND data file for local loopback interface
+;
+$TTL    604800
+@       IN      SOA     abimanyu.b12.com. root.abimanyu.b12.com. (
+                     2023100901         ; Serial
+                         604800         ; Refresh
+                          86400         ; Retry
+                        2419200         ; Expire
+                         604800 )       ; Negative Cache TTL
+;
+@               IN      NS      abimanyu.b12.com.
+@               IN      A       192.184.3.4 ; IP Abimanyu
+www             IN      CNAME   abimanyu.b12.com.
+parikesit       IN      A       192.184.3.4 ; IP Abimanyu
+@               IN      AAAA    ::1
+
+' > /etc/bind/abimanyu/abimanyu.b12.com
+
+service bind9 restart
+```
+- Mengubah konfigurasi `abimanyu.b12.com`
+- Menambahkan `A` menuju IP Abimanyu yaitu `192.184.3.4` dengan nama `parikesit`
+
+**Sadewa & Nakula**
+
+Setelah membuat subdomain, kita dapat cek subdomain menggunakan ping di `Client Sadewa` atau `Client Nakula`.
+```
+ping parikesit.abimanyu.b12.com -c 5
+```
+### Screenshot hasil:
+<img width="600" alt="1" src="https://github.com/fathinmputra/Jarkom-Modul-2-B12-2023/assets/133391111/272c5dd1-1286-4fdd-b875-906cbcf1030f">
+<img width="600" alt="2" src="https://github.com/fathinmputra/Jarkom-Modul-2-B12-2023/assets/133391111/30a75411-6306-4b14-8e53-d3eecda891e4">
+
+## NO. 5
+> Buat juga reverse domain untuk domain utama. (Abimanyu saja yang direverse)
+
+### Penjelasan :
+Melakukan `bash no5.sh` pada DNS Master Yudhistira untuk reverse domain untuk abimanyu.b12.com.
+
+**Yudhistira**
+```
+echo '
+
+zone "3.184.192.in-addr.arpa" {
+    type master;
+    file "/etc/bind/abimanyu/3.184.192.in-addr.arpa";
+}; ' >> /etc/bind/named.conf.local
+
+cp /etc/bind/db.local /etc/bind/abimanyu/3.184.192.in-addr.arpa
+
+echo '
+;
+; BIND data file for local loopback interface
+;
+$TTL    604800
+@       IN      SOA     abimanyu.b12.com. root.abimanyu.b12.com. (
+                     2023100901         ; Serial
+                         604800         ; Refresh
+                          86400         ; Retry
+                        2419200         ; Expire
+                         604800 )       ; Negative Cache TTL
+;
+3.184.192.in-addr.arpa. IN      NS      abimanyu.b12.com.
+4                       IN      PTR     abimanyu.b12.com.
+'> /etc/bind/abimanyu/3.184.192.in-addr.arpa
+
+service bind9  restart 
+```
+- Mengubah konfigurasi `named.conf.local` dengan menambahkan zone reverse domainnya.
+- Copy db.local menuju abimanyu dengan nama reverse domain
+- Kemudian ubah konfigurasi reverse domain 3.184.192.in-addr.arpa seperti di atas.
+- Terakhir, restart bind9
+
+**Sadewa & Nakula**
+
+Pertama, install dnsutils pada client Sadewa/Nakula. Dapat dilakukan dengan melakukan `bash no5.sh`
+```
+echo '
+nameserver 192.168.122.1
+//nameserver 192.184.2.2
+' > /etc/resolv.conf
+
+apt-get update
+apt-get install dnsutils
+
+echo '
+//nameserver 192.168.122.1
+nameserver 192.184.2.2
+' > /etc/resolv.conf
+```
+- Pertama, ubah nameserver ke nameserver awal.
+- Kedua, install dnsutils.
+- Terakhir, kembalikan nameserver menuju ke IP DNS Master Yudhistira.
+
+Kita dapat cek reverse domain menggunakan host -t PTR di `Client Sadewa` atau `Client Nakula`.
+```
+host -t PTR 192.184.3.4
+```
+### Screenshot hasil:
+<img width="600" alt="1" src="https://github.com/fathinmputra/Jarkom-Modul-2-B12-2023/assets/133391111/3549e5b6-8ada-4328-82e8-ae55e652d9a8">
+<img width="600" alt="2" src="https://github.com/fathinmputra/Jarkom-Modul-2-B12-2023/assets/133391111/a717d2d8-8814-46ed-98bb-3d2c059aace3">
+
+## NO. 6
+> Agar dapat tetap dihubungi ketika DNS Server Yudhistira bermasalah, buat juga Werkudara sebagai DNS Slave untuk domain utama.
+
+### Penjelasan :
+Melakukan `bash no6.sh` pada DNS Master Yudhistira untuk melakukan konfigurasi di dalam Yudhistira.
+
+**Yudhistira**
+```
+echo '
+//
+// Do any local configuration here
+//
+
+// Consider adding the 1918 zones here, if they are not used in your
+// organization
+//include "/etc/bind/zones.rfc1918";
+zone "arjuna.b12.com" {
+        type master;
+        notify yes;
+        also-notify { 192.184.3.2; };
+        allow-transfer { 192.184.3.2; };
+        file "/etc/bind/arjuna/arjuna.b12.com";
+};
+
+
+zone "abimanyu.b12.com" {
+        type master;
+        notify yes;
+        also-notify { 192.184.3.2; };
+        allow-transfer { 192.184.3.2; };
+        file "/etc/bind/abimanyu/abimanyu.b12.com";
+};
+
+
+zone "3.184.192.in-addr.arpa" {
+    type master;
+    file "/etc/bind/abimanyu/3.184.192.in-addr.arpa";
+};
+' > /etc/bind/named.conf.local
+
+service bind9 restart
+```
+- Mengubah konfigurasi `named.conf.local`.
+- Menambahkan `notify yes`, `also-notify { IP Werkudara };`, `allow-transfer { Werkudara };` pada zone arjuna dan abimanyu.
+- Restart bind9.
+
+**Werkudara**
+
+Melakukan `bash no6.sh` untuk membuat konfigurasi DNS Slave.
+```
+apt-get update
+
+apt-get install bind9 -y
+
+echo '
+//
+// Do any local configuration here
+//
+
+// Consider adding the 1918 zones here, if they are not used in your
+// organization
+//include "/etc/bind/zones.rfc1918";
+zone "arjuna.b12.com" {
+    type slave;
+    masters { 192.184.2.2; };
+    file "/var/lib/bind/arjuna.b12.com";
+};
+
+zone "abimanyu.b12.com" {
+    type slave;
+    masters { 192.184.2.2; };
+    file "/var/lib/bind/abimanyu.b12.com";
+};
+' > /etc/bind/named.conf.local
+
+service bind9 restart
+```
+- Mengubah konfigurasi `named.conf.local`.
+- Menambahkan zone arjuna dan abimanyu
+- `type slave` karena Werkudara akan dijadikan DNS Slave dengan master menuju IP Yudhistira.
+
+**Sadewa & Nakula**
+
+Pertama, menambahkan nameserver DNS Slave ke `resolv.conf`. Dapat dilakukan dengan melakukan `bash no6.sh`.
+```
+echo '
+//nameserver 192.168.122.1
+nameserver 192.184.2.2
+nameserver 192.184.3.2
+' > /etc/resolv.conf
+```
+- Menambahkan nameserver DNS Slave/IP Werkudara.
+
+**Kita akan cek apakah DNS Slave berhasil**
+
+Pertama akan distop bind9 di `Yudhistira`
+```
+service bind9 stop 
+```
+Kemudian melakukan ping di `Client Sadewa` atau `Client Nakula`.
+```
+ping www.abimanyu.b12.com -c 5
+```
+Jika berhasil, maka DNS Slave sudah benar.
+
+### Screenshot hasil:
+<img width="600" alt="1" src="https://github.com/fathinmputra/Jarkom-Modul-2-B12-2023/assets/133391111/98129bbf-de87-4936-981b-c17fbc770cca">
+<img width="600" alt="2" src="https://github.com/fathinmputra/Jarkom-Modul-2-B12-2023/assets/133391111/c034f7ca-d5bd-471d-ac86-3c7c8f3f72d0">
+
+## NO. 7
+> Seperti yang kita tahu karena banyak sekali informasi yang harus diterima, buatlah subdomain khusus untuk perang yaitu baratayuda.abimanyu.yyy.com dengan alias www.baratayuda.abimanyu.yyy.com yang didelegasikan dari Yudhistira ke Werkudara dengan IP menuju ke Abimanyu dalam folder Baratayuda.
+
+### Penjelasan :
+
+**Yudhistira**
+Melakukan `bash no7.sh` untuk memasang konfigurasi di Yudhistira.
+```
+echo '
+;
+; BIND data file for local loopback interface
+;
+$TTL    604800
+@       IN      SOA     abimanyu.b12.com. root.abimanyu.b12.com. (
+                     2023100901         ; Serial
+                         604800         ; Refresh
+                          86400         ; Retry
+                        2419200         ; Expire
+                         604800 )       ; Negative Cache TTL
+;
+@               IN      NS      abimanyu.b12.com.
+@               IN      A       192.184.3.4 ; IP Abimanyu
+www             IN      CNAME   abimanyu.b12.com.
+parikesit       IN      A       192.184.3.4 ; IP Abimanyu
+ns1             IN      A       192.184.3.2 ; IP Werkudara
+baratayuda      IN      NS      ns1
+@               IN      AAAA    ::1
+' > /etc/bind/abimanyu/abimanyu.b12.com
+
+echo '
+options {
+        directory "/var/cache/bind";
+
+        // If there is a firewall between you and nameservers you want
+        // to talk to, you may need to fix the firewall to allow multiple
+        // ports to talk.  See http://www.kb.cert.org/vuls/id/800113
+
+        // If your ISP provided one or more IP addresses for stable 
+        // nameservers, you probably want to use them as forwarders.  
+        // Uncomment the following block, and insert the addresses replacing 
+        // the all-0s placeholder.
+
+        // forwarders {
+        //      0.0.0.0;
+        // };
+
+        //=====================================================================$
+        // If BIND logs error messages about the root key being expired,
+        // you will need to update your keys.  See https://www.isc.org/bind-keys
+        //=====================================================================$
+        //dnssec-validation auto;
+        allow-query{any;};
+
+        auth-nxdomain no;    # conform to RFC1035
+        listen-on-v6 { any; };
+};
+' > /etc/bind/named.conf.options
+
+echo '
+//
+// Do any local configuration here
+//
+
+// Consider adding the 1918 zones here, if they are not used in your
+// organization
+//include "/etc/bind/zones.rfc1918";
+zone "arjuna.b12.com" {
+        type master;
+        notify yes;
+        also-notify { 192.184.3.2; };
+        allow-transfer { 192.184.3.2; };
+        file "/etc/bind/arjuna/arjuna.b12.com";
+};
+
+
+zone "abimanyu.b12.com" {
+        type master;
+        allow-transfer { 192.184.3.2; };
+        file "/etc/bind/abimanyu/abimanyu.b12.com";
+};
+
+
+zone "3.184.192.in-addr.arpa" {
+    type master;
+    file "/etc/bind/abimanyu/3.184.192.in-addr.arpa";
+};
+' > /etc/bind/named.conf.local
+
+service bind9 restart
+```
+- Pertama, Mengubah konfigurasi `abimanyu.b12.com` dengan menambahkan ns1 menuju IP Werkudara dan diberi nama baratayuda.
+- Kedua, Mengubah konfigurasi `named.conf.options` dengan melakukan comment `dnssec-validation auto;` dan menambahkan `allow-query{any;};`.
+- Terakhir, Mengubah konfigurasi `named.conf.local` dengan menghilangkan notify dan also-notify pada zone abimanyu.
+
+**Werkudara**
+
+Melakukan `bash no7.sh` untuk mengatur konfigurasi Werkudara.
+```
+echo "
+options {
+        directory \"/var/cache/bind\";
+
+        // If there is a firewall between you and nameservers you want
+        // to talk to, you may need to fix the firewall to allow multiple
+        // ports to talk.  See http://www.kb.cert.org/vuls/id/800113
+
+        // If your ISP provided one or more IP addresses for stable 
+        // nameservers, you probably want to use them as forwarders.  
+        // Uncomment the following block, and insert the addresses replacing 
+        // the all-0s placeholder.
+
+        // forwarders {
+        //      0.0.0.0;
+        // };
+
+        //=====================================================================$
+        //dnssec-validation auto;
+        allow-query{any;};
+
+        auth-nxdomain no;    # conform to RFC1035
+        listen-on-v6 { any; };
+};
+" > /etc/bind/named.conf.options
+
+echo '
+//
+// Do any local configuration here
+//
+
+// Consider adding the 1918 zones here, if they are not used in your
+// organization
+//include "/etc/bind/zones.rfc1918";
+zone "arjuna.b12.com" {
+    type slave;
+    masters { 192.184.2.2; };
+    file "/var/lib/bind/arjuna.b12.com";
+};
+
+zone "abimanyu.b12.com" {
+    type slave;
+    masters { 192.184.2.2; };
+    file "/var/lib/bind/abimanyu.b12.com";
+};
+zone "baratayuda.abimanyu.b12.com"{
+        type master;
+        file "/etc/bind/Baratayuda/baratayuda.abimanyu.b12.com";
+};
+' > /etc/bind/named.conf.local
+
+mkdir /etc/bind/Baratayuda
+cp /etc/bind/db.local /etc/bind/Baratayuda/baratayuda.abimanyu.b12.com
+
+echo '
+;
+; BIND data file for local loopback interface
+;
+$TTL    604800
+@       IN      SOA     baratayuda.abimanyu.b12.com. root.baratayuda.abimanyu.b$
+                     2023100901         ; Serial
+                         604800         ; Refresh
+                          86400         ; Retry
+                        2419200         ; Expire
+                         604800 )       ; Negative Cache TTL
+;
+@       IN      NS      baratayuda.abimanyu.b12.com.
+@       IN      A       192.184.3.4 ; IP Abimanyu
+www     IN      CNAME   baratayuda.abimanyu.b12.com.
+@       IN      AAAA    ::1
+' > /etc/bind/Baratayuda/baratayuda.abimanyu.b12.com
+
+service bind9 restart
+```
+- Pertama, mengubah konfigurasi `/etc/bind/named.conf.options` persis seperti Yudhistira.
+- Kedua, mengubah konfigurasi `named.conf.local` dengan menambahkan zone `baratayuda.abimanyu.b12.com`, kemudian membuat direktori Baratayuda ddan copy db.local ke direktori Baratayuda.
+- Terkahir, mengubah konfigurasi file yang dicopy tadi `baratayuda.abimanyu.b12.com`.
+
+**Sadewa & Nakula**
+
+Cek apakah subdomain sudah berjalan atau tidak menggunakan ping di Client Sadewa/Nakula
+```
+ping baratayuda.abimanyu.b12.com -c 5
+ping www.baratayuda.abimanyu.b12.com -c 5
+```
+
+### Screenshot hasil:
+<img width="600" alt="1" src="https://github.com/fathinmputra/Jarkom-Modul-2-B12-2023/assets/133391111/6113dc89-bb57-4fda-b063-53097dc990b8">
+<img width="600" alt="2" src="https://github.com/fathinmputra/Jarkom-Modul-2-B12-2023/assets/133391111/4a86f330-7161-411c-ab45-3b9e1043bfdb">
+
+## NO. 8
+> Untuk informasi yang lebih spesifik mengenai Ranjapan Baratayuda, buatlah subdomain melalui Werkudara dengan akses rjp.baratayuda.abimanyu.yyy.com dengan alias www.rjp.baratayuda.abimanyu.yyy.com yang mengarah ke Abimanyu.
+
+### Penjelasan :
+
+**Werkudara**
+
+Melakukan `bash no8.sh` untuk mengatur konfigurasi Werkudara.
+```
+echo '
+;
+; BIND data file for local loopback interface
+;
+$TTL    604800
+@       IN      SOA     baratayuda.abimanyu.b12.com. root.baratayuda.abimanyu.b$
+                     2023100901         ; Serial
+                         604800         ; Refresh
+                          86400         ; Retry
+                        2419200         ; Expire
+                         604800 )       ; Negative Cache TTL
+;
+@       IN      NS      baratayuda.abimanyu.b12.com.
+@       IN      A       192.184.3.4 ; IP Abimanyu
+www     IN      CNAME   baratayuda.abimanyu.b12.com.
+rjp     IN      A       192.184.3.4 ; IP Abimanyu
+www.rjp IN      CNAME   rjp.baratayuda.abimanyu.b12.com.
+@       IN      AAAA    ::1
+' > /etc/bind/Baratayuda/baratayuda.abimanyu.b12.com
+
+service bind9 restart
+```
+- Mengubah konfigurasi `baratayuda.abimanyu.b12.com` dengan menambahkan `A` menuju IP abimanyu dan diberi nama `rjp`. Kemudian tambahkan alias `www.rjp` ke `rjp.baratayuda.abimanyu.b12.com`.
+
+**Sadewa & Nakula**
+
+Cek apakah subdomain sudah berjalan atau tidak menggunakan ping di Client Sadewa/Nakula
+```
+ping rjp.baratayuda.abimanyu.b12.com -c 5
+ping www.rjp.baratayuda.abimanyu.b12.com -c 5
+```
+
+### Screenshot hasil:
+<img width="600" alt="1" src="https://github.com/fathinmputra/Jarkom-Modul-2-B12-2023/assets/133391111/668e5bc6-b947-4ba6-b9c9-42ffb049346b">
+<img width="600" alt="2" src="https://github.com/fathinmputra/Jarkom-Modul-2-B12-2023/assets/133391111/a6879e4f-a7a9-4869-a6dd-f8b011c312d0">
+
+## NO. 9
+> Arjuna merupakan suatu Load Balancer Nginx dengan tiga worker (yang juga menggunakan nginx sebagai webserver) yaitu Prabakusuma, Abimanyu, dan Wisanggeni. Lakukan deployment pada masing-masing worker.
+
+### Penjelasan :
+
+**Prabakusuma & Abimanyu & Wisanggeni**
+
+Melakukan `bash no9.sh` untuk mengatur konfigurasi pada WebServer `Prabakusuma & Abimanyu & Wisanggeni`.
+```
+mkdir /var/www/arjuna
+
+cp index.php /var/www/arjuna/index.php
+
+echo '
+server {
+
+        listen 80;
+
+        root /var/www/arjuna;
+
+        index index.php index.html index.htm;
+        server_name www.arjuna.b12.com arjuna.b12.com;
+
+        location / {
+                        try_files $uri $uri/ /index.php?$query_string;
+        }
+
+        # pass PHP scripts to FastCGI server
+        location ~ \.php$ {
+        include snippets/fastcgi-php.conf;
+        fastcgi_pass unix:/var/run/php/php7.0-fpm.sock;
+        }
+
+location ~ /\.ht {
+                        deny all;
+        }
+
+        error_log /var/log/nginx/arjuna_error.log;
+        access_log /var/log/nginx/arjuna_access.log;
+}
+' > /etc/nginx/sites-available/arjuna
+
+ln -s /etc/nginx/sites-available/arjuna /etc/nginx/sites-enabled
+
+service php7.0-fpm start
+rm -rf /etc/nginx/sites-enabled/default
+service nginx restart
+```
+- Pertama, buat direktori arjuna di path /var/www
+- Kedua, copy index.php ke direktori arjuna.
+- Kemudian, ubah konfigurasi `/etc/nginx/sites-available/arjuna`.
+- restart php, remove `/etc/nginx/sites-enabled/default`, dan restart nginx.
+
+Jika sudah, dapat dicek apakah konfigurasi sudah benar apa belum menggunakan `nginx -t`.
+
+Hasil :
+
+<img width="600" alt="3" src="https://github.com/fathinmputra/Jarkom-Modul-2-B12-2023/assets/133391111/6764e5b8-7a8f-4518-b110-a85a4303fa9f">
+<img width="600" alt="4" src="https://github.com/fathinmputra/Jarkom-Modul-2-B12-2023/assets/133391111/2962626e-f038-4030-af5c-b41ec831665a">
+<img width="600" alt="5" src="https://github.com/fathinmputra/Jarkom-Modul-2-B12-2023/assets/133391111/805c6958-d617-49be-a504-1bbdb9dab9a8">
+
+**Arjuna**
+
+`bash no9.sh` untuk mengubah konfigurasi Arjuna.
+```
+rm -f /etc/nginx/sites-enabled/lb-arjuna
+echo '
+# Default menggunakan Round Robin
+upstream myweb  {
+        server 192.184.3.4 ; #Abimanyu
+        server 192.184.3.5 ; #Prabakusuma
+        server 192.184.3.6 ; #Wisanggeni
+}
+
+server {
+        listen 80;
+        server_name arjuna.b12.com;
+
+        location / {
+        proxy_pass http://myweb;
+        }
+}
+' > /etc/nginx/sites-available/lb-arjuna
+
+ln -s /etc/nginx/sites-available/lb-arjuna /etc/nginx/sites-enabled
+
+service nginx start
+service nginx restart
+```
+- Mengubah konfigurasi `/etc/nginx/sites-available/lb-arjuna`.
+- restart nginx.
+
+**Pandudewanata**
+
+`bash no9.sh` untuk mengubah konfigurasi Pandudewanata.
+```
+echo '
+#nameserver 192.168.122.1
+' > /etc/resolv.conf
+```
+- Mengubah konfigurasi `resolv.conf` dengan comment nameserver.
+
+**Sadewa & Nakula**
+
+Melakukan konfigurasi pada Client Sadewa & Nakula dengan eksekusi `bash no9.sh`.
+```
+echo '
+nameserver 192.168.122.1
+//nameserver 192.184.2.2
+//nameserver 192.184.3.2
+' > /etc/resolv.conf
+
+apt-get update
+apt-get install lynx
+
+echo '
+#nameserver 192.168.122.1
+nameserver 192.184.2.2
+nanmeserver 192.184.3.2
+' > /etc/resolv.conf
+```
+- Mengubah nameserver menjadi awal aga bisa install.
+- Install lynx.
+- Ubah lagi nameserver menuju IP DNS Master dan Slave agar bisa membuka domain.
+
+Setelah semua konfigurasi sudah, maka terakhir cek apakah web dapat ditampilkan.
+```
+lynx http://arjuna.b12.com
+```
+
+### Screenshot hasil:
+<img width="420" alt="6" src="https://github.com/fathinmputra/Jarkom-Modul-2-B12-2023/assets/133391111/3623100a-3a12-40fe-9a1a-82c71527fa95">
+<img width="420" alt="7" src="https://github.com/fathinmputra/Jarkom-Modul-2-B12-2023/assets/133391111/d1dfd8fa-5f13-4441-810a-922635b916ff">
+<img width="423" alt="8" src="https://github.com/fathinmputra/Jarkom-Modul-2-B12-2023/assets/133391111/e9b06a91-10ea-4f15-91c9-e3422145ba59">
+
+## NO. 10
+> Kemudian gunakan algoritma Round Robin untuk Load Balancer pada Arjuna. Gunakan server_name pada soal nomor 1. Untuk melakukan pengecekan akses alamat web tersebut kemudian pastikan worker yang digunakan untuk menangani permintaan akan berganti ganti secara acak. Untuk webserver di masing-masing worker wajib berjalan di port 8001-8003. Contoh
+    - Prabakusuma:8001
+    - Abimanyu:8002
+    - Wisanggeni:8003
+
+### Penjelasan :
+
+`bash no10.sh` untuk konfigurasi Arjuna.
+**Arjuna**
+
+`bash no9.sh` untuk mengubah konfigurasi Arjuna.
+```
+echo '
+upstream myweb  {
+        server 192.184.3.5:8001; #Prabakusuma
+        server 192.184.3.4:8002; #Abimanyu
+        server 192.184.3.6:8003; #Wisanggeni
+}
+
+server {
+        listen 80;
+        server_name arjuna.b12.com;
+
+        location / {
+        proxy_pass http://myweb;
+        }
+}
+
+server {
+        listen 8001;
+        server_name arjuna.b12.com:8001;
+
+        location / {
+                proxy_pass http://myweb;
+        }
+}
+
+server {
+        listen 8002;
+        server_name arjuna.b12.com:8002;
+
+        location / {
+                proxy_pass http://myweb;
+        }
+}
+
+server {
+        listen 8003;
+        server_name arjuna.b12.com:8003;
+
+        location / {
+                proxy_pass http://myweb;
+        }
+}
+
+' > /etc/nginx/sites-available/lb-arjuna
+
+ln -s /etc/nginx/sites-available/lb-arjuna /etc/nginx/sites-enabled
+
+service nginx restart
+```
+- Mengubah konfigurasi `/etc/nginx/sites-available/lb-arjuna` dengan menambahkan port 8001-8003 pada masing-masing webserver.
+- restart nginx.
+
+**Prabakusuma & Abimanyu & Wisanggeni**
+
+Melakukan `bash no10.sh` untuk mengatur konfigurasi pada WebServer `Prabakusuma & Abimanyu & Wisanggeni`.
+```
+echo '
+server {
+
+        listen 8002;
+
+        root /var/www/arjuna;
+
+        index index.php index.html index.htm;
+        server_name www.arjuna.b12.com arjuna.b12.com;
+
+        location / {
+                        try_files $uri $uri/ /index.php?$query_string;
+        }
+
+        # pass PHP scripts to FastCGI server
+        location ~ \.php$ {
+        include snippets/fastcgi-php.conf;
+        fastcgi_pass unix:/var/run/php/php7.0-fpm.sock;
+        }
+
+location ~ /\.ht {
+                        deny all;
+        }
+
+        error_log /var/log/nginx/arjuna_error.log;
+        access_log /var/log/nginx/arjuna_access.log;
+}
+' > /etc/nginx/sites-available/arjuna
+
+service php7.0-fpm restart
+service nginx restart
+```
+- Mengubah port yang ada di `/etc/nginx/sites-available/arjuna` menjadi 8001-8003 sesuai dengan ketentuan webserver masing masing.
+- Contoh di atas merupakan konfigurasi webserver `Abimanyu`, sehingga port diganti dengan `8002`.
+
+**Sadewa & Nakula**
+
+Setelah semua konfigurasi sudah, maka terakhir cek apakah web dapat ditampilkan.
+```
+lynx http://arjuna.b12.com:8001
+lynx http://arjuna.b12.com:8002
+lynx http://arjuna.b12.com:8003
+```
+
+### Screenshot hasil:
+<img width="600" alt="1" src="https://github.com/fathinmputra/Jarkom-Modul-2-B12-2023/assets/133391111/85867746-f06b-4d3b-b020-511167678dec">
+<img width="600" alt="2" src="https://github.com/fathinmputra/Jarkom-Modul-2-B12-2023/assets/133391111/39a0bddb-5c97-48d0-8358-3adad059ead3">
+<img width="600" alt="3" src="https://github.com/fathinmputra/Jarkom-Modul-2-B12-2023/assets/133391111/dfa80a82-56a3-4a3b-8994-bf19bb57c892">
 
 ## NO. 11
 > Selain menggunakan Nginx, lakukan konfigurasi Apache Web Server pada worker Abimanyu dengan web server www.abimanyu.yyy.com. Pertama dibutuhkan web server dengan DocumentRoot pada /var/www/abimanyu.yyy
