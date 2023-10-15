@@ -144,7 +144,7 @@ ping www.abimanyu.b12.com -c 5
 
 **Abimanyu**
 
-Pada root Abimanyu Webserver dibuat script no11.sh yang antinya perlu di `bash no11.sh`. Berisi :
+Pada root Abimanyu Webserver dibuat script no11.sh yang perlu di `bash no11.sh`. Berisi :
 ```
 apt-get install apache2 -y
 service apache2 start
@@ -217,8 +217,74 @@ lynx abimanyu.b12.com
 > Setelah itu ubahlah agar url www.abimanyu.yyy.com/index.php/home menjadi www.abimanyu.yyy.com/home.
 
 ### Penjelasan :
+**Abimanyu**
+
+Pada root Abimanyu Webserver dibuat script no11.sh yang perlu di `bash no12.sh`. Berisi :
+```
+echo '
+<VirtualHost *:80>
+        # The ServerName directive sets the request scheme, hostname and port t$      # the server uses to identify itself. This is used when creating
+        # redirection URLs. In the context of virtual hosts, the ServerName
+        # specifies what hostname must appear in the requests Host: header to
+        # match this virtual host. For the default virtual host (this file) this      # value is not dcisive as it is used as a last resort host regardless.
+        # However, you must set it for any further virtual host explicitly.
+        #ServerName www.example.com
+
+        ServerAdmin webmaster@localhost
+        DocumentRoot /var/www/abimanyu.b12
+        ServerName abimanyu.b12.com
+        ServerAlias www.abimanyu.b12.com
+
+        <Directory /var/www/abimanyu.b12/index.php/home>
+                Options +Indexes
+        </Directory>
+
+        Alias "/home" "/var/www/abimanyu.b12/index.php/home"
+
+        # Available loglevels: trace8, ..., trace1, debug, info, notice, warn,
+        # error, crit, alert, emerg.
+        # It is also possible to configure the loglevel for particular
+        # modules, e.g.
+        #LogLevel info ssl:warn
+       ErrorLog ${APACHE_LOG_DIR}/error.log
+        CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+        # For most configuration files from conf-available/, which are
+        # enabled or disabled at a global level, it is possible to
+        # include a line for only one particular virtual host. For example the
+        # following line enables the CGI configuration for this host only
+        # after it has been globally disabled with "a2disconf".
+        #Include conf-available/serve-cgi-bin.conf
+</VirtualHost>
+
+# vim: syntax=apache ts=4 sw=4 sts=4 sr noet
+' > /etc/apache2/sites-available/abimanyu.b12.com.conf
+
+service apache2 restart
+```
+Pada script tersebut terdapat penambahan bagian :
+```
+        <Directory /var/www/abimanyu.b12/index.php/home>
+                Options +Indexes
+        </Directory>
+```
+
+dan juga
+
+```
+Alias "/home" "/var/www/abimanyu.b12/index.php/home"
+```
+
+**Sadewa & Nakula**
+Pada client Sadewa dan Nakula dapat diinputkan command berikut ini untuk menampilkan hasilnya :
+```
+lynx abimanyu.b12.com/home
+```
 
 ### Screenshot hasil:
+<img width="361" alt="image" src="https://github.com/fathinmputra/Jarkom-Modul-2-B12-2023/assets/103252800/51ac4944-6e19-4ace-a19b-42cf275d34ef">
+
+<img width="364" alt="image" src="https://github.com/fathinmputra/Jarkom-Modul-2-B12-2023/assets/103252800/7652f4b4-c797-45ad-ab31-f0f1f6140b08">
 
 
 ## NO. 13
@@ -226,7 +292,73 @@ lynx abimanyu.b12.com
 
 ### Penjelasan :
 
+**Abimanyu**
+Pada root Abimanyu Webserver dibuat script no11.sh yang perlu di `bash no13.sh`. Berisi :
+```
+cp /etc/apache2/sites-available/000-default.conf /etc/apache2/sites-available/parikesit.abimanyu.b12.com.conf
+cp parikesit.abimanyu.b12.com.conf /etc/apache2/sites-available/parikesit.abimanyu.b12.com.conf
+
+a2ensite parikesit.abimanyu.b12.com
+
+service apache2 restart
+
+apt-get install wget
+wget --no-check-certificate 'https://docs.google.com/uc?export=download&id=1Ldapt-get install unzip
+unzip parikesit.abimanyu.b12.zip
+
+cp -r /root/parikesit.abimanyu.yyy.com/. /var/www/parikesit.abimanyu.b12
+```
+
+Pada bagian `cp parikesit.abimanyu.b12.com.conf /etc/apache2/sites-available/parikesit.abimanyu.b12.com.conf`, disitu `parikesit.abimanyu.b12.com.conf` disimpan pada root berisi :
+```
+<VirtualHost *:80>
+        # The ServerName directive sets the request scheme, hostname and port t$      # the server uses to identify itself. This is used when creating
+        # redirection URLs. In the context of virtual hosts, the ServerName
+        # specifies what hostname must appear in the requests Host: header to
+        # match this virtual host. For the default virtual host (this file) this      # value is not dcisive as it is used as a last resort host regardless.
+        # However, you must set it for any further virtual host explicitly.
+        #ServerName www.example.com
+
+        ServerAdmin webmaster@localhost
+        DocumentRoot /var/www/parikesit.abimanyu.b12
+        ServerName parikesit.abimanyu.b12.com
+        ServerAlias www.parikesit.abimanyu.b12.com
+
+        <Directory /var/www/parikesit.abimanyu.b12/index.php/home>
+                Options +Indexes
+        </Directory>
+
+        Alias "/home" "/var/www/parikesit.abimanyu.b12/index.php/home"
+
+        # Available loglevels: trace8, ..., trace1, debug, info, notice, warn,
+        # error, crit, alert, emerg.
+        # It is also possible to configure the loglevel for particular
+        # modules, e.g.
+        #LogLevel info ssl:warn
+       ErrorLog ${APACHE_LOG_DIR}/error.log
+        CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+        # For most configuration files from conf-available/, which are
+        # enabled or disabled at a global level, it is possible to
+        # include a line for only one particular virtual host. For example the
+        # following line enables the CGI configuration for this host only
+        # after it has been globally disabled with "a2disconf".
+        #Include conf-available/serve-cgi-bin.conf
+</VirtualHost>
+
+# vim: syntax=apache ts=4 sw=4 sts=4 sr noet
+```
+
+**Sadewa & Nakula**
+Pada client Sadewa dan Nakula dapat diinputkan command berikut ini untuk menampilkan hasilnya :
+```
+lynx parikesit.abimanyu.b12.com
+```
+
 ### Screenshot hasil:
+<img width="337" alt="image" src="https://github.com/fathinmputra/Jarkom-Modul-2-B12-2023/assets/103252800/2f823bab-32de-4ab1-a41c-bcfce9b4c1d5">
+
+<img width="342" alt="image" src="https://github.com/fathinmputra/Jarkom-Modul-2-B12-2023/assets/103252800/083e8b06-2ba4-425b-8784-09ed146ab650">
 
 
 ## NO. 14
@@ -234,13 +366,135 @@ lynx abimanyu.b12.com
 
 ### Penjelasan :
 
+**Abimanyu**
+
+Pada root Abimanyu Webserver dibuat script no11.sh yang perlu di `bash no14.sh`. Berisi :
+```
+mkdir /var/www/parikesit.abimanyu.b12/secret
+
+cp rahasia.html /var/www/parikesit.abimanyu.b12/secret/rahasia.html 
+
+cp parikesit.abimanyu.b12.com.conf /etc/apache2/sites-available/parikesit.abimanyu.b12.com.conf
+
+service apache2 restart
+```
+Pada bagian `cp rahasia.html /var/www/parikesit.abimanyu.b12/secret/rahasia.html` , isi dari `rahasia.html` yang disimpan di root, yaitu :
+```
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Cetak Rahasia</title>
+</head>
+<body>
+    <h1>Ini Rahasia!</h1>
+</body>
+</html>
+```
+Lalu, pada bagian `cp parikesit.abimanyu.b12.com.conf /etc/apache2/sites-available/parikesit.abimanyu.b12.com.conf` , isi dari `parikesit.abimanyu.b12.com.conf` yang disimpan di root, yaitu :
+```
+<VirtualHost *:80>
+        # The ServerName directive sets the request scheme, hostname and port t$       # the server uses to identify itself. This is used when creating
+        # redirection URLs. In the context of virtual hosts, the ServerName
+        # specifies what hostname must appear in the requests Host: header to
+        # match this virtual host. For the default virtual host (this file) this       # value is not dcisive as it is used as a last resort host regardless.
+        # However, you must set it for any further virtual host explicitly.
+        #ServerName www.example.com
+
+        ServerAdmin webmaster@localhost
+        DocumentRoot /var/www/parikesit.abimanyu.b12
+        ServerName parikesit.abimanyu.b12.com
+        ServerAlias www.parikesit.abimanyu.b12.com
+
+        <Directory /var/www/parikesit.abimanyu.b12/public>
+                Options +Indexes
+        </Directory>
+
+        <Directory /var/www/parikesit.abimanyu.b12/secret>
+                Options -Indexes
+        </Directory>
+
+        # Available loglevels: trace8, ..., trace1, debug, info, notice, warn,
+        # error, crit, alert, emerg.
+        # It is also possible to configure the loglevel for particular
+        # modules, e.g.
+        #LogLevel info ssl:warn
+        ErrorLog ${APACHE_LOG_DIR}/error.log
+        CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+        # For most configuration files from conf-available/, which are
+        # enabled or disabled at a global level, it is possible to
+        # include a line for only one particular virtual host. For example the
+        # following line enables the CGI configuration for this host only
+        # after it has been globally disabled with "a2disconf".
+        #Include conf-available/serve-cgi-bin.conf
+</VirtualHost>
+```
+
+Terdapat penambahan di bagian :
+```
+        <Directory /var/www/parikesit.abimanyu.b12/public>
+                Options +Indexes
+        </Directory>
+
+        <Directory /var/www/parikesit.abimanyu.b12/secret>
+                Options -Indexes
+        </Directory>
+```
+
+**Sadewa & Nakula**
+
+Pada client Sadewa dan Nakula dapat diinputkan command berikut ini untuk menampilkan hasilnya :
+```
+lynx parikesit.abimanyu.b12.com/public
+```
+
+dan
+
+```
+lynx parikesit.abimanyu.b12.com/secret
+```
+
 ### Screenshot hasil:
+```
+lynx parikesit.abimanyu.b12.com/public
+```
+
+<img width="340" alt="image" src="https://github.com/fathinmputra/Jarkom-Modul-2-B12-2023/assets/103252800/a402d0d8-38c2-42ca-80dc-c32c9c902455">
+
+
+dan
+
+```
+lynx parikesit.abimanyu.b12.com/secret
+```
+
+<img width="338" alt="image" src="https://github.com/fathinmputra/Jarkom-Modul-2-B12-2023/assets/103252800/e3484e04-6d47-4e04-aced-3a5819ac0b53">
+
+<img width="343" alt="image" src="https://github.com/fathinmputra/Jarkom-Modul-2-B12-2023/assets/103252800/7c791454-96ac-4ca8-bb9c-73cf315808ec">
 
 
 ## NO. 15
 > Buatlah kustomisasi halaman error pada folder /error untuk mengganti error kode pada Apache. Error kode yang perlu diganti adalah 404 Not Found dan 403 Forbidden.
 
 ### Penjelasan :
+
+**Abimanyu**
+
+Pada root Abimanyu Webserver dibuat script no11.sh yang perlu di `bash no15.sh`. Berisi :
+```
+cp error /etc/apache2/sites-available/parikesit.abimanyu.b12.com.conf
+
+service apache2 restart
+```
+Pada bagian `cp error /etc/apache2/sites-available/parikesit.abimanyu.b12.com.conf` script di atas, terdapat script bernama `error` yang disimpan pada root untuk di copykan ke `/etc/apache2/sites-available/parikesit.abimanyu.b12.com.conf`. Script `error` tersebut berisi :
+```
+
+**Sadewa & Nakula**
+
+Pada client Sadewa dan Nakula dapat diinputkan command berikut ini untuk menampilkan hasilnya :
+```
+
+```
 
 ### Screenshot hasil:
 
@@ -251,6 +505,16 @@ www.parikesit.abimanyu.yyy.com/js
 
 ### Penjelasan :
 
+**Abimanyu**
+Pada root Abimanyu Webserver disimpan script no16.sh yang perlu di `bash no11.sh`. Berisi :
+
+**Sadewa & Nakula**
+
+Pada client Sadewa dan Nakula dapat diinputkan command berikut ini untuk menampilkan hasilnya :
+```
+
+```
+
 ### Screenshot hasil:
 
 
@@ -258,6 +522,17 @@ www.parikesit.abimanyu.yyy.com/js
 > Agar aman, buatlah konfigurasi agar www.rjp.baratayuda.abimanyu.yyy.com hanya dapat diakses melalui port 14000 dan 14400.
 
 ### Penjelasan :
+
+**Abimanyu**
+
+Pada root Abimanyu Webserver disimpan script no17.sh yang perlu di `bash no11.sh`. Berisi :
+
+**Sadewa & Nakula**
+
+Pada client Sadewa dan Nakula dapat diinputkan command berikut ini untuk menampilkan hasilnya :
+```
+
+```
 
 ### Screenshot hasil:
 
@@ -267,6 +542,17 @@ www.parikesit.abimanyu.yyy.com/js
 
 ### Penjelasan :
 
+**Abimanyu**
+
+Pada root Abimanyu Webserver disimpan script no11.sh yang perlu di `bash no18.sh`. Berisi :
+
+**Sadewa & Nakula**
+
+Pada client Sadewa dan Nakula dapat diinputkan command berikut ini untuk menampilkan hasilnya :
+```
+
+```
+
 ### Screenshot hasil:
 
 
@@ -274,6 +560,16 @@ www.parikesit.abimanyu.yyy.com/js
 > Buatlah agar setiap kali mengakses IP dari Abimanyu akan secara otomatis dialihkan ke www.abimanyu.yyy.com (alias)
 
 ### Penjelasan :
+**Abimanyu**
+
+Pada root Abimanyu Webserver disimpan script no19.sh yang perlu di `bash no11.sh`. Berisi :
+
+**Sadewa & Nakula**
+
+Pada client Sadewa dan Nakula dapat diinputkan command berikut ini untuk menampilkan hasilnya :
+```
+
+```
 
 ### Screenshot hasil:
 
@@ -282,6 +578,17 @@ www.parikesit.abimanyu.yyy.com/js
 Karena website www.parikesit.abimanyu.yyy.com semakin banyak pengunjung dan banyak gambar gambar random, maka ubahlah request gambar yang memiliki substring “abimanyu” akan diarahkan menuju abimanyu.png.
 
 ### Penjelasan :
+
+**Abimanyu**
+
+Pada root Abimanyu Webserver disimpan script no11.sh yang perlu di `bash no20.sh`. Berisi :
+
+**Sadewa & Nakula**
+
+Pada client Sadewa dan Nakula dapat diinputkan command berikut ini untuk menampilkan hasilnya :
+```
+
+```
 
 ### Screenshot hasil:
 
