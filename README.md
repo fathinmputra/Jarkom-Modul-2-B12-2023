@@ -830,10 +830,9 @@ lynx http://arjuna.b12.com
 
 ### Penjelasan :
 
-`bash no10.sh` untuk konfigurasi Arjuna.
 **Arjuna**
+`bash no10.sh` untuk konfigurasi Arjuna.
 
-`bash no9.sh` untuk mengubah konfigurasi Arjuna.
 ```
 echo '
 upstream myweb  {
