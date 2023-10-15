@@ -390,7 +390,9 @@ Pada bagian `cp rahasia.html /var/www/parikesit.abimanyu.b12/secret/rahasia.html
 </body>
 </html>
 ```
+
 Lalu, pada bagian `cp parikesit.abimanyu.b12.com.conf /etc/apache2/sites-available/parikesit.abimanyu.b12.com.conf` , isi dari `parikesit.abimanyu.b12.com.conf` yang disimpan di root, yaitu :
+
 ```
 <VirtualHost *:80>
         # The ServerName directive sets the request scheme, hostname and port t$       # the server uses to identify itself. This is used when creating
@@ -487,16 +489,81 @@ cp error /etc/apache2/sites-available/parikesit.abimanyu.b12.com.conf
 service apache2 restart
 ```
 Pada bagian `cp error /etc/apache2/sites-available/parikesit.abimanyu.b12.com.conf` script di atas, terdapat script bernama `error` yang disimpan pada root untuk di copykan ke `/etc/apache2/sites-available/parikesit.abimanyu.b12.com.conf`. Script `error` tersebut berisi :
+
+```
+<VirtualHost *:80>
+        # The ServerName directive sets the request scheme, hostname and port t$       # the server uses to identify itself. This is used when creating
+        # redirection URLs. In the context of virtual hosts, the ServerName
+        # specifies what hostname must appear in the requests Host: header to
+        # match this virtual host. For the default virtual host (this file) this       # value is not dcisive as it is used as a last resort host regardless.
+        # However, you must set it for any further virtual host explicitly.
+        #ServerName www.example.com
+
+        ServerAdmin webmaster@localhost
+        DocumentRoot /var/www/parikesit.abimanyu.b12
+        ServerName parikesit.abimanyu.b12.com
+        ServerAlias www.parikesit.abimanyu.b12.com
+
+        ErrorDocument 403 /error/403.html
+        ErrorDocument 404 /error/404.html
+
+        <Directory /var/www/parikesit.abimanyu.b12/public>
+                Options +Indexes
+        </Directory>
+
+        <Directory /var/www/parikesit.abimanyu.b12/secret>
+                Options -Indexes
+        </Directory>
+
+        # Available loglevels: trace8, ..., trace1, debug, info, notice, warn,
+        # error, crit, alert, emerg.
+        # It is also possible to configure the loglevel for particular
+        # modules, e.g.
+        #LogLevel info ssl:warn
+       ErrorLog ${APACHE_LOG_DIR}/error.log
+       CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+        # For most configuration files from conf-available/, which are
+        # enabled or disabled at a global level, it is possible to
+        # include a line for only one particular virtual host. For example the
+        # following line enables the CGI configuration for this host only
+        # after it has been globally disabled with "a2disconf".
+        #Include conf-available/serve-cgi-bin.conf
+</VirtualHost>
+
+# vim: syntax=apache ts=4 sw=4 sts=4 sr noet
 ```
 
 **Sadewa & Nakula**
 
 Pada client Sadewa dan Nakula dapat diinputkan command berikut ini untuk menampilkan hasilnya :
 ```
+lynx parikesit.abimanyu.b12.com/ngaco
+```
 
+dan
+
+```
+lynx parikesit.abimanyu.b12.com/secret
 ```
 
 ### Screenshot hasil:
+```
+lynx parikesit.abimanyu.b12.com/ngaco
+```
+<img width="338" alt="image" src="https://github.com/fathinmputra/Jarkom-Modul-2-B12-2023/assets/103252800/91f96190-9f23-41e3-b2fa-050820687565">
+
+<img width="339" alt="image" src="https://github.com/fathinmputra/Jarkom-Modul-2-B12-2023/assets/103252800/1010b60c-2984-49ab-96bc-641e999d45e9">
+
+dan
+
+```
+lynx parikesit.abimanyu.b12.com/secret
+```
+
+<img width="341" alt="image" src="https://github.com/fathinmputra/Jarkom-Modul-2-B12-2023/assets/103252800/cee81242-6853-4356-bc1a-6688f62d01c8">
+
+<img width="342" alt="image" src="https://github.com/fathinmputra/Jarkom-Modul-2-B12-2023/assets/103252800/ad5f20a6-de47-4843-9f1a-82663fa2a6b5">
 
 
 ## NO. 16
@@ -506,16 +573,63 @@ www.parikesit.abimanyu.yyy.com/js
 ### Penjelasan :
 
 **Abimanyu**
+
 Pada root Abimanyu Webserver disimpan script no16.sh yang perlu di `bash no11.sh`. Berisi :
+
+```
+cp js /etc/apache2/sites-available/parikesit.abimanyu.b12.com.conf
+
+service apache2 restart
+```
+
+Pada bagian `cp js /etc/apache2/sites-available/parikesit.abimanyu.b12.com.conf` , isi dari `js` yang disimpan di root, yaitu :
+
+```
+<VirtualHost *:80>
+        # The ServerName directive sets the request scheme, hostname and port t$       # the server uses to identify itself. This is used when creating
+        # redirection URLs. In the context of virtual hosts, the ServerName
+        # specifies what hostname must appear in the requests Host: header to
+        # match this virtual host. For the default virtual host (this file) this       # value is not dcisive as it is used as a last resort host regardless.
+        # However, you must set it for any further virtual host explicitly.
+        #ServerName www.example.com
+
+        ServerAdmin webmaster@localhost
+        DocumentRoot /var/www/parikesit.abimanyu.b12
+        ServerName parikesit.abimanyu.b12.com
+        ServerAlias www.parikesit.abimanyu.b12.com
+        Alias "/js" "/var/www/parikesit.abimanyu.b12/public/js"
+
+        ErrorDocument 403 /error/403.html
+        ErrorDocument 404 /error/404.html
+
+        # Available loglevels: trace8, ..., trace1, debug, info, notice, warn,
+        # error, crit, alert, emerg.
+        # It is also possible to configure the loglevel for particular
+        # modules, e.g.
+        #LogLevel info ssl:warn
+        ErrorLog ${APACHE_LOG_DIR}/error.log
+        CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+        # For most configuration files from conf-available/, which are
+        # enabled or disabled at a global level, it is possible to
+        # include a line for only one particular virtual host. For example the
+        # following line enables the CGI configuration for this host only
+        # after it has been globally disabled with "a2disconf".
+        #Include conf-available/serve-cgi-bin.conf
+</VirtualHost>
+
+# vim: syntax=apache ts=4 sw=4 sts=4 sr noet
+```
 
 **Sadewa & Nakula**
 
 Pada client Sadewa dan Nakula dapat diinputkan command berikut ini untuk menampilkan hasilnya :
 ```
-
+lynx parikesit.abimanyu.b12.com/js
 ```
 
 ### Screenshot hasil:
+<img width="341" alt="image" src="https://github.com/fathinmputra/Jarkom-Modul-2-B12-2023/assets/103252800/da2ec454-fdb5-4ccd-9306-091a17bc5b0b">
 
 
 ## NO. 17
@@ -525,16 +639,50 @@ Pada client Sadewa dan Nakula dapat diinputkan command berikut ini untuk menampi
 
 **Abimanyu**
 
-Pada root Abimanyu Webserver disimpan script no17.sh yang perlu di `bash no11.sh`. Berisi :
+Pada root Abimanyu Webserver disimpan script no17.sh yang perlu di `bash no17.sh`. Berisi :
+
+```
+cp rjp /etc/apache2/sites-available/rjp.baratayuda.abimanyu.b12.com.conf
+
+cp ports.conf /etc/apache2/ports.conf
+
+a2ensite rjp.baratayuda.abimanyu.b12.com.conf
+
+service apache2 restart
+
+wget --no-check-certificate 'https://docs.google.com/uc?export=download&id=1pPSP7yIR05JhSFG67RVzgkb-VcW9vQO6' -O rjp.baratayuda.abimanyu.b12.zip
+
+mkdir /var/www/rjp.baratayuda.abimanyu.b12
+
+cp -r /root/rjp.baratayuda.abimanyu.yyy.com/. /var/www/rjp.baratayuda.abimanyu.b12
+```
 
 **Sadewa & Nakula**
 
 Pada client Sadewa dan Nakula dapat diinputkan command berikut ini untuk menampilkan hasilnya :
 ```
+lynx rjp.baratayuda.abimanyu.b12.com:14000
+```
 
+dan
+
+```
+lynx rjp.baratayuda.abimanyu.b12.com:14400
 ```
 
 ### Screenshot hasil:
+
+```
+lynx rjp.baratayuda.abimanyu.b12.com:14000
+```
+<img width="341" alt="image" src="https://github.com/fathinmputra/Jarkom-Modul-2-B12-2023/assets/103252800/c4a1a152-1477-4683-a854-9525bc33d5a3">
+
+dan
+
+```
+lynx rjp.baratayuda.abimanyu.b12.com:14400
+```
+<img width="342" alt="image" src="https://github.com/fathinmputra/Jarkom-Modul-2-B12-2023/assets/103252800/bb974ce3-d7a5-4b1c-9792-5b4d0df84319">
 
 
 ## NO. 18
